@@ -1,4 +1,12 @@
-"""Shared utilities for FSCV classification pipeline."""
+"""Shared utilities for FSCV classification pipeline — iPSC 3-CLASS, MLP-only.
+
+RF/XGB/CNN dropped from this pipeline (no feature separability advantage
+for RF/XGB, CNN didn't outperform MLP) — so load_features() and
+select_models() are gone too, since they existed only to serve those
+models. load_raw_for_features() no longer needs features_v2.csv (an
+engineered-feature table nothing here uses); it reads the lightweight
+balance+split file produced by make_split_3class.py instead.
+"""
 
 import numpy as np
 import pandas as pd
@@ -8,25 +16,28 @@ from sklearn.metrics import roc_auc_score
 RANDOM_STATE = 42
 CLASS_NAMES  = ['Baseline', 'Spontaneous', 'Stimulated']
 
-def load_features():
-    """Load engineered features from features_v2.csv."""
-    print("Loading engineered features...")
-    df = pd.read_csv(r"C:\Users\julie\OneDrive - Imperial College London\3 class output after relabelling\features_v2.csv")
-    feat_cols = [c for c in df.columns if c not in ['window_id', 'label', 'group_id']]
-    X = df[feat_cols].values.astype(np.float32)
-    y, groups = df['label'].values, df['group_id'].astype(str).values
-    print(f"  {len(y)} windows, {len(feat_cols)} features, {len(np.unique(groups))} groups")
-    return X, y, groups
+BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output after relabelling"
 
-def load_raw_for_features():
-    """Load raw flattened windows matching features_v2.csv order."""
-    print("Loading raw windows...")
-    df = pd.read_csv(r"C:\Users\julie\OneDrive - Imperial College London\3 class output after relabelling\features_v2.csv")
-    X = np.array([np.load(rf"C:\Users\julie\OneDrive - Imperial College London\3 class output after relabelling\window_arrays\{wid}.npy").flatten()
+
+def load_raw_for_features(split="train"):
+    """
+    Load raw flattened windows for the given split ('train' or 'test').
+    Defaults to 'train' — existing calls with no argument keep working
+    unchanged.
+
+    Reads window_id/label/group_id from the lightweight split file
+    (windows_metadata_train_v2.csv / windows_metadata_test_v2.csv,
+    produced by make_split_3class.py) rather than features_v2.csv —
+    no engineered features are computed or needed for the MLP.
+    """
+    print(f"Loading raw windows ({split})...")
+    df = pd.read_csv(rf"{BASE}\windows_metadata_{split}_v2.csv")
+    X = np.array([np.load(rf"{BASE}\window_arrays\{wid}.npy").flatten()
               for wid in df['window_id']], dtype=np.float32)
     y, groups = df['label'].values, df['group_id'].astype(str).values
-    print(f"  {len(y)} windows, {X.shape[1]} raw features")
+    print(f"  {len(y)} windows, {X.shape[1]} raw features, {len(np.unique(groups))} groups")
     return X, y, groups
+
 
 def compute_metrics(y_true, y_proba):
     """
@@ -48,6 +59,7 @@ def compute_metrics(y_true, y_proba):
     }
     return metrics
 
+
 def print_metrics(metrics, name):
     """Print multiclass metrics to terminal."""
     print(f"\n{name} RESULTS")
@@ -63,11 +75,3 @@ def print_metrics(metrics, name):
     print(f"    {'':14}", "  ".join(f"{c:>14}" for c in CLASS_NAMES))
     for i, row in enumerate(metrics['confusion_matrix']):
         print(f"    {CLASS_NAMES[i]:14}", "  ".join(f"{v:>14}" for v in row))
-
-def select_models(action="train"):
-    """Interactive model selection."""
-    print(f"\nSelect models to {action}: 1=RF  2=XGB  3=MLP  4=CNN  5=LSTM  6=ALL  0=Exit")
-    choice = input("Choice: ").strip()
-    if choice == '0': return []
-    if choice == '6': return ['rf', 'xgb', 'mlp', 'cnn', 'lstm']
-    return [{'1': 'rf', '2': 'xgb', '3': 'mlp', '4': 'cnn', '5': 'lstm'}.get(c) for c in choice if c in '12345']
