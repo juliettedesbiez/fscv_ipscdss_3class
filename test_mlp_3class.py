@@ -21,7 +21,7 @@ MLP_INPUT     = N_VOLTAGE_PTS * WINDOW_FRAMES
 BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output after relabelling"
 SPONTANEOUS_BOOST = 0.03   # confirmed via two independent CV threshold sweeps, 30 July 2026
 
-os.makedirs(rf"{BASE}\results_v7", exist_ok=True)
+os.makedirs(rf"{BASE}\results", exist_ok=True)
 
 
 class MLP(nn.Module):
@@ -43,7 +43,7 @@ def apply_threshold_boost(proba, boost=SPONTANEOUS_BOOST, class_idx=1):
 
 
 def test_mlp(X, y):
-    path = rf"{BASE}\models_v7\mlp_model.pkl"
+    path = rf"{BASE}\models\mlp_model.pkl"
     if not os.path.exists(path):
         print("MLP model not found"); return None, None
 
@@ -66,10 +66,10 @@ def test_mlp(X, y):
     metrics_final = compute_metrics(y, proba_boosted)
     print_metrics(metrics_final, 'MLP (boosted, FINAL)')
 
-    json.dump(metrics_raw,   open(rf"{BASE}\results_v7\mlp_test_unboosted.json", 'w'), default=float)
-    json.dump(metrics_final, open(rf"{BASE}\results_v7\mlp_test_final.json", 'w'), default=float)
-    np.save(rf"{BASE}\results_v7\mlp_proba_raw.npy", proba_raw)
-    np.save(rf"{BASE}\results_v7\mlp_proba_boosted.npy", proba_boosted)
+    json.dump(metrics_raw,   open(rf"{BASE}\results\mlp_test_unboosted.json", 'w'), default=float)
+    json.dump(metrics_final, open(rf"{BASE}\results\mlp_test_final.json", 'w'), default=float)
+    np.save(rf"{BASE}\results\mlp_proba_raw.npy", proba_raw)
+    np.save(rf"{BASE}\results\mlp_proba_boosted.npy", proba_boosted)
 
     return metrics_raw, metrics_final
 
@@ -95,7 +95,7 @@ def main():
     if metrics_final:
         print(f"MLP FINAL: F1_macro={metrics_final['f1_macro']:.4f}  AUC={metrics_final['auc_macro']:.4f}")
     print("="*40)
-    print(f"\n✓ Final result saved: results_v7\\mlp_test_final.json")
+    print(f"\n✓ Final result saved: results\\mlp_test_final.json")
 
 
 if __name__ == "__main__":
