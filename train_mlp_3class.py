@@ -25,7 +25,7 @@ from utils_3class import load_raw_for_features, compute_metrics, print_metrics, 
  
 import yaml
  
-with open("fscv_config.yaml") as f:
+with open("fscv_config_ipsc.yaml") as f:
     _cfg = yaml.safe_load(f)
 WINDOW_FRAMES = int(2.0 * _cfg['fscv_hz'])
 N_VOLTAGE_PTS = 1100
