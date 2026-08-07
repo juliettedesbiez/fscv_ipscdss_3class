@@ -9,7 +9,7 @@ still needs from extract_features_3class.py: class balancing and a
 leak-free group-aware split. Output is a plain window_id/label/group_id
 table, not a feature table.
 
-Usage: python make_split_3class.py [--config fscv_config.yaml]
+Usage: python make_split_3class.py [--config fscv_config_ipsc.yaml]
 
 Classes: 0=baseline, 1=spontaneous, 2=stimulated
 """
@@ -23,14 +23,14 @@ from utils_3class import RANDOM_STATE
 BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output after relabelling"
 
 
-def load_config(path="fscv_config.yaml"):
+def load_config(path="fscv_config_ipsc.yaml"):
     with open(path, 'r') as f:
         return yaml.safe_load(f)
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', default='fscv_config.yaml')
+    parser.add_argument('--config', default='fscv_config_ipsc.yaml')
     args = parser.parse_args()
 
     cfg = load_config(args.config)
