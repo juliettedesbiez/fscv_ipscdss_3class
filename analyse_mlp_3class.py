@@ -33,7 +33,7 @@ warnings.filterwarnings('ignore')
 BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output after relabelling"
 SPONTANEOUS_BOOST = 0.03   # confirmed via two independent CV threshold sweeps, 30 July 2026
 
-os.makedirs(rf"{BASE}\results_v7\figures", exist_ok=True)
+os.makedirs(rf"{BASE}\results\figures", exist_ok=True)
 
 CLASS_NAMES = ['Baseline', 'Spontaneous', 'Stimulated']
 COLOR       = '#C2185B'
@@ -74,8 +74,8 @@ X_raw = np.array([np.load(rf"{BASE}\window_arrays\{wid}.npy").flatten()
                   for wid in test_meta['window_id'].values], dtype=np.float32)
 
 # ── LOAD MODEL AND GET PROBABILITIES ──────────────────────────────────────────
-print("Loading MLP model (models_v7)...")
-mlp_data = pickle.load(open(rf"{BASE}\models_v7\mlp_model.pkl", 'rb'))
+print("Loading MLP model (models)...")
+mlp_data = pickle.load(open(rf"{BASE}\models\mlp_model.pkl", 'rb'))
 mlp_m = MLP()
 mlp_m.load_state_dict(mlp_data['model_state'])
 mlp_m.eval()
@@ -111,7 +111,7 @@ ax.set_ylabel('TPR', fontsize=11)
 ax.legend(fontsize=9)
 ax.grid(alpha=0.3)
 plt.tight_layout()
-plt.savefig(rf"{BASE}\results_v7\figures\roc_curves_test.jpg", dpi=200, bbox_inches='tight')
+plt.savefig(rf"{BASE}\results\figures\roc_curves_test.jpg", dpi=200, bbox_inches='tight')
 plt.close()
 print("  ✓ roc_curves_test.jpg")
 
@@ -130,7 +130,7 @@ ax.set_ylabel('Precision', fontsize=11)
 ax.legend(fontsize=9)
 ax.grid(alpha=0.3)
 plt.tight_layout()
-plt.savefig(rf"{BASE}\results_v7\figures\pr_curves_test.jpg", dpi=200, bbox_inches='tight')
+plt.savefig(rf"{BASE}\results\figures\pr_curves_test.jpg", dpi=200, bbox_inches='tight')
 plt.close()
 print("  ✓ pr_curves_test.jpg")
 
@@ -143,7 +143,7 @@ disp.plot(ax=ax, cmap='RdPu', colorbar=False)
 ax.set_title(f'MLP Confusion Matrix — Test Set (boosted, MCC={mcc:.3f})', fontsize=12, fontweight='bold')
 ax.tick_params(axis='x', rotation=30)
 plt.tight_layout()
-plt.savefig(rf"{BASE}\results_v7\figures\confusion_matrix_test.jpg", dpi=200, bbox_inches='tight')
+plt.savefig(rf"{BASE}\results\figures\confusion_matrix_test.jpg", dpi=200, bbox_inches='tight')
 plt.close()
 print("  ✓ confusion_matrix_test.jpg")
 
@@ -176,7 +176,7 @@ for row, label, color in [
 
 ax.set_title('MLP Gradient Saliency Map — Input Importance', fontsize=14, fontweight='bold')
 plt.tight_layout()
-plt.savefig(rf"{BASE}\results_v7\figures\mlp_saliency.jpg", dpi=200, bbox_inches='tight')
+plt.savefig(rf"{BASE}\results\figures\mlp_saliency.jpg", dpi=200, bbox_inches='tight')
 plt.close()
 print("  ✓ mlp_saliency.jpg")
 
@@ -218,4 +218,4 @@ else:
     print("\nNeither band shows above-chance saliency — REVIEW NEEDED,")
     print("saliency does not appear to concentrate on electrochemically meaningful regions.")
 
-print(f"\n✓ ANALYSIS COMPLETE — 4 figures saved to results_v7\\figures\\")
+print(f"\n✓ ANALYSIS COMPLETE — 4 figures saved to results\\figures\\")
