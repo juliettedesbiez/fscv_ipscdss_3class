@@ -13,7 +13,7 @@ import yaml
 # Paths - not prep-specific, change here if needed
 PLOT_DIR   = r"C:\Users\julie\OneDrive - Imperial College London\data for 3 class annotations"
 LABELS_CSV = r"C:\Users\julie\OneDrive - Imperial College London\3 class output\FSCV_Labels_June.csv"
-WINDOW_DIR = r"C:\Users\julie\OneDrive - Imperial College London\3 class output after relabelling\window_arrays"
+WINDOW_DIR = r"C:\Users\julie\OneDrive - Imperial College London\3 class output\window_arrays"
 
 def load_config(path="fscv_config_ipsc.yaml"):
     with open(path, 'r') as f:
