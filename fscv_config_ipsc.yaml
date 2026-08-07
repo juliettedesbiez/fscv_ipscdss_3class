@@ -1,0 +1,25 @@
+# ============================================================
+# FSCV Pipeline Configuration
+# Swap this file to change preparation without touching code.
+# ============================================================
+
+# Acquisition parameters
+fscv_hz: 10.0         # frames per second
+
+# Windowing (used in make_windows.py)
+# WINDOW_FRAMES is derived as int(2.0 * fscv_hz)
+# BG_FRAMES is derived as int(5.0 * fscv_hz)
+stride: 5             # step size in frames between windows
+max_nothing: 50       # max baseline windows extracted per file
+
+# Voltage row indices (Jackson waveform, verified from voltage-datapoints.xlsx)
+# row 0=0.2V, row 199=0.6V (oxidation peak), row 399=1.0V (turnaround),
+# row 899=0.0V (reduction trough), row 1099=0.2V
+v_oxidation_start: 200   # start of oxidation window (rows)
+v_oxidation_end: 400     # end of oxidation window (rows)
+v_reduction_start: 800   # start of reduction window (rows)
+v_reduction_end: 1000     # end of reduction window (rows)
+
+# Class balancing (used in extract_features.py)
+# Baseline windows capped at balance_ratio * max(n_spontaneous, n_stimulated)
+balance_ratio: 2
