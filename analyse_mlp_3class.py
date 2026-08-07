@@ -39,7 +39,7 @@ CLASS_NAMES = ['Baseline', 'Spontaneous', 'Stimulated']
 COLOR       = '#C2185B'
 
 # ── CONFIG ────────────────────────────────────────────────────────────────────
-with open("fscv_config.yaml") as f:
+with open("fscv_config_ipsc.yaml") as f:
     cfg = yaml.safe_load(f)
 WINDOW_FRAMES = int(2.0 * cfg['fscv_hz'])
 N_VOLTAGE_PTS = 1100
