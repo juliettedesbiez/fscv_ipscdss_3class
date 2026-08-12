@@ -1,7 +1,8 @@
 """
 Test the final MLP model on the held-out test set (RUN ONCE — final reportable numbers).
 Classes: 0=baseline, 1=spontaneous, 2=stimulated
-Applies the confirmed threshold boost (spontaneous probability) before argmax.
+Applies the confirmed threshold boosts (spontaneous and stimulated probabilities)
+before argmax, tuned via sweep_boost_3class_2d.py.
 
 Usage: python test_mlp_3class.py
 """
@@ -18,10 +19,12 @@ WINDOW_FRAMES = int(2.0 * _cfg['fscv_hz'])
 N_VOLTAGE_PTS = 1100
 MLP_INPUT     = N_VOLTAGE_PTS * WINDOW_FRAMES
 
-BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output after relabelling"
-SPONTANEOUS_BOOST = 0.03   # confirmed via two independent CV threshold sweeps, 30 July 2026
+BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output retrain"
+SPONTANEOUS_BOOST = 0.10
+STIMULATED_BOOST = 1.00   
+RESULTS_DIR = rf"{BASE}\resultscheckofmodels"
 
-os.makedirs(rf"{BASE}\results", exist_ok=True)
+os.makedirs(RESULTS_DIR, exist_ok=True)
 
 
 class MLP(nn.Module):
@@ -34,10 +37,12 @@ class MLP(nn.Module):
     def forward(self, x): return self.net(x)
 
 
-def apply_threshold_boost(proba, boost=SPONTANEOUS_BOOST, class_idx=1):
-    """Scale spontaneous's probability and renormalise before argmax."""
+def apply_threshold_boost(proba, spont_boost=SPONTANEOUS_BOOST, stim_boost=STIMULATED_BOOST,
+                            spont_idx=1, stim_idx=2):
+    """Scale spontaneous and stimulated probabilities and renormalise before argmax."""
     boosted = proba.copy()
-    boosted[:, class_idx] *= boost
+    boosted[:, spont_idx] *= spont_boost
+    boosted[:, stim_idx] *= stim_boost
     boosted = boosted / boosted.sum(axis=1, keepdims=True)
     return boosted
 
@@ -62,14 +67,19 @@ def test_mlp(X, y):
     metrics_raw = compute_metrics(y, proba_raw)
     print_metrics(metrics_raw, 'MLP (unboosted)')
 
-    print("\n=== BOOSTED (final reportable result, boost=0.03) ===")
+    print(f"\n=== BOOSTED (final reportable result, spont={SPONTANEOUS_BOOST}, stim={STIMULATED_BOOST}) ===")
     metrics_final = compute_metrics(y, proba_boosted)
     print_metrics(metrics_final, 'MLP (boosted, FINAL)')
 
-    json.dump(metrics_raw,   open(rf"{BASE}\results\mlp_test_unboosted.json", 'w'), default=float)
-    json.dump(metrics_final, open(rf"{BASE}\results\mlp_test_final.json", 'w'), default=float)
-    np.save(rf"{BASE}\results\mlp_proba_raw.npy", proba_raw)
-    np.save(rf"{BASE}\results\mlp_proba_boosted.npy", proba_boosted)
+    # Defensive re-creation right before writing -- guarantees the folder
+    # exists at the moment it's actually needed, regardless of anything
+    # that happened (or didn't) at import time.
+    os.makedirs(RESULTS_DIR, exist_ok=True)
+
+    json.dump(metrics_raw,   open(rf"{RESULTS_DIR}\mlp_test_unboosted.json", 'w'), default=float)
+    json.dump(metrics_final, open(rf"{RESULTS_DIR}\mlp_test_final.json", 'w'), default=float)
+    np.save(rf"{RESULTS_DIR}\mlp_proba_raw.npy", proba_raw)
+    np.save(rf"{RESULTS_DIR}\mlp_proba_boosted.npy", proba_boosted)
 
     return metrics_raw, metrics_final
 
@@ -95,7 +105,7 @@ def main():
     if metrics_final:
         print(f"MLP FINAL: F1_macro={metrics_final['f1_macro']:.4f}  AUC={metrics_final['auc_macro']:.4f}")
     print("="*40)
-    print(f"\n✓ Final result saved: results\\mlp_test_final.json")
+    print(f"\n✓ Final result saved: {RESULTS_DIR}\\mlp_test_final.json")
 
 
 if __name__ == "__main__":
