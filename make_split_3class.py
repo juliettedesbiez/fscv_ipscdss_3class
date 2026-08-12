@@ -20,7 +20,7 @@ import pandas as pd
 import yaml
 from utils_3class import RANDOM_STATE
 
-BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output after relabelling"
+BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output retrain"
 
 
 def load_config(path="fscv_config_ipsc.yaml"):
