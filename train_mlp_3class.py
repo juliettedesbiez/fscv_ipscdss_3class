@@ -33,7 +33,7 @@ MLP_INPUT     = N_VOLTAGE_PTS * WINDOW_FRAMES
 
 N_SPLITS = 5
 
-BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output after relabelling"
+BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output retrain"
 
 os.makedirs(rf"{BASE}\models", exist_ok=True)
 
