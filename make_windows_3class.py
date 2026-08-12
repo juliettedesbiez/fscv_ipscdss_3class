@@ -15,7 +15,7 @@ PLOT_DIR   = r"C:\Users\julie\OneDrive - Imperial College London\data for 3 clas
 LABELS_CSV = r"C:\Users\julie\OneDrive - Imperial College London\3 class output\FSCV_Labels_June.csv"
 
 # BASE covers everything this script writes — window_arrays/ and windows_metadata.csv both live under it
-BASE       = r"C:\Users\julie\OneDrive - Imperial College London\3 class output"
+BASE       = r"C:\Users\julie\OneDrive - Imperial College London\3 class output retrain"
 WINDOW_DIR = rf"{BASE}\window_arrays"
 
 def load_config(path="fscv_config_ipsc.yaml"):
