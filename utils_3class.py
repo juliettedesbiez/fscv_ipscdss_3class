@@ -16,7 +16,7 @@ from sklearn.metrics import roc_auc_score
 RANDOM_STATE = 42
 CLASS_NAMES  = ['Baseline', 'Spontaneous', 'Stimulated']
 
-BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output after relabelling"
+BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output retrain"
 
 
 def load_raw_for_features(split="train"):
