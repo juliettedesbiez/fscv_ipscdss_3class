@@ -3,9 +3,9 @@ sweep_boost_oof.py
 Tunes the spontaneous/stimulated boost values against CV out-of-fold (OOF)
 predictions, NOT the held-out test set.
 
-This is the methodologically correct restructure: mlp_oof_yproba.npy /
+This is the methodologically correct structure: mlp_oof_yproba.npy /
 mlp_oof_ytrue.npy were saved during train_mlp_3class.py's 5-fold CV -- each
-window's OOF prediction came from a model that never saw that window during
+window's OOF prediction come from a model that never saw that window during
 training, but critically this data is entirely separate from the held-out
 test set. Tuning boost here, then applying the chosen fixed value to the
 test set exactly once, keeps the test set honest -- consistent with the
@@ -17,7 +17,7 @@ Usage: python sweep_boost_oof.py
 import numpy as np
 from sklearn.metrics import f1_score, confusion_matrix
 
-BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output retrain"
+BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output"
 CLASS_NAMES = ['Baseline', 'Spontaneous', 'Stimulated']
 
 print("Loading CV out-of-fold predictions (training-side, not the test set)...")
