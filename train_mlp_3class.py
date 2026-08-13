@@ -2,10 +2,10 @@
 Train MLP — 3-class classifier.
 Classes: 0=baseline, 1=spontaneous, 2=stimulated
 
-RF, XGBoost, and CNN dropped from this script — RF/XGB lack feature
+RF and XGBoost dropped from this script — RF/XGB lack feature
 separability on the spontaneous/stimulated boundary (12-feature tree
-models can't access the shape information the raw waveform carries),
-and CNN did not outperform the MLP. MLP-only, trained on raw waveforms,
+models can't access the shape information the raw waveform carries). 
+MLP-only, trained on raw waveforms,
 is the winning single-model choice for the 3-class bundle.
 
 MLP config: plain CrossEntropyLoss + WeightedRandomSampler stacked,
@@ -33,14 +33,14 @@ MLP_INPUT     = N_VOLTAGE_PTS * WINDOW_FRAMES
 
 N_SPLITS = 5
 
-BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output retrain"
+BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output"
 
 os.makedirs(rf"{BASE}\models", exist_ok=True)
 
 
 def main():
-    if not os.path.exists(rf"{BASE}\windows_metadata_train_v2.csv"):
-        print("windows_metadata_train_v2.csv not found — run make_split_3class.py first"); return
+    if not os.path.exists(rf"{BASE}\windows_metadata_train.csv"):
+        print("windows_metadata_train.csv not found — run make_split_3class.py first"); return
 
     X_raw, y, groups = load_raw_for_features()
 
