@@ -20,7 +20,7 @@ import pandas as pd
 import yaml
 from utils_3class import RANDOM_STATE
 
-BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output retrain"
+BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output"
 
 
 def load_config(path="fscv_config_ipsc.yaml"):
@@ -78,11 +78,11 @@ def main():
     train = balanced[balanced['split'] == 'train'][['window_id', 'file_id', 'group_id', 'label']]
     test  = balanced[balanced['split'] == 'test'][['window_id', 'file_id', 'group_id', 'label']]
 
-    train.to_csv(rf"{BASE}\windows_metadata_train_v2.csv", index=False)
-    test.to_csv(rf"{BASE}\windows_metadata_test_v2.csv", index=False)
+    train.to_csv(rf"{BASE}\windows_metadata_train.csv", index=False)
+    test.to_csv(rf"{BASE}\windows_metadata_test.csv", index=False)
 
-    print(f"\n✓ {BASE}\\windows_metadata_train_v2.csv ({len(train)} windows)")
-    print(f"✓ {BASE}\\windows_metadata_test_v2.csv ({len(test)} windows)")
+    print(f"\n✓ {BASE}\\windows_metadata_train.csv ({len(train)} windows)")
+    print(f"✓ {BASE}\\windows_metadata_test.csv ({len(test)} windows)")
 
 
 if __name__ == "__main__":
