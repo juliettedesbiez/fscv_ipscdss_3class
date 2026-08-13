@@ -8,10 +8,6 @@ Generates:
   figures/confusion_matrix_test.jpg
   figures/mlp_saliency.jpg
 
-Uses the confirmed threshold boosts (spontaneous and stimulated probabilities)
-for all reported predictions — this reflects the actual deployed model
-behaviour. Tuned via sweep_boost_3class_2d.py.
-
 Run after test_mlp_3class.py.
 Usage: python analyse_mlp_3class.py
 """
@@ -31,11 +27,11 @@ from sklearn.preprocessing import label_binarize
 
 warnings.filterwarnings('ignore')
 
-BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output retrain"
+BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output"
 SPONTANEOUS_BOOST = 0.10  
 STIMULATED_BOOST = 1.00   
 
-os.makedirs(rf"{BASE}\resultscheckofmodels\figures", exist_ok=True)
+os.makedirs(rf"{BASE}\results_3class\figures", exist_ok=True)
 
 CLASS_NAMES = ['Baseline', 'Spontaneous', 'Stimulated']
 COLOR       = '#C2185B'
@@ -67,7 +63,7 @@ def apply_threshold_boost(proba, spont_boost=SPONTANEOUS_BOOST, stim_boost=STIMU
     return boosted / boosted.sum(axis=1, keepdims=True)
 
 # ── LOAD TEST DATA ────────────────────────────────────────────────────────────
-test_meta = pd.read_csv(rf"{BASE}\windows_metadata_test_v2.csv")
+test_meta = pd.read_csv(rf"{BASE}\windows_metadata_test.csv")
 y_test    = test_meta['label'].values
 print(f"Test set: {len(y_test)} samples")
 for i, name in enumerate(CLASS_NAMES):
@@ -115,7 +111,7 @@ ax.set_ylabel('TPR', fontsize=11)
 ax.legend(fontsize=9)
 ax.grid(alpha=0.3)
 plt.tight_layout()
-plt.savefig(rf"{BASE}\resultscheckofmodels\figures\roc_curves_test.jpg", dpi=200, bbox_inches='tight')
+plt.savefig(rf"{BASE}\results_3class\figures\roc_curves_test.jpg", dpi=200, bbox_inches='tight')
 plt.close()
 print("  ✓ roc_curves_test.jpg")
 
@@ -134,7 +130,7 @@ ax.set_ylabel('Precision', fontsize=11)
 ax.legend(fontsize=9)
 ax.grid(alpha=0.3)
 plt.tight_layout()
-plt.savefig(rf"{BASE}\resultscheckofmodels\figures\pr_curves_test.jpg", dpi=200, bbox_inches='tight')
+plt.savefig(rf"{BASE}\results_3class\figures\pr_curves_test.jpg", dpi=200, bbox_inches='tight')
 plt.close()
 print("  ✓ pr_curves_test.jpg")
 
@@ -147,7 +143,7 @@ disp.plot(ax=ax, cmap='RdPu', colorbar=False)
 ax.set_title(f'MLP Confusion Matrix — Test Set (boosted, MCC={mcc:.3f})', fontsize=12, fontweight='bold')
 ax.tick_params(axis='x', rotation=30)
 plt.tight_layout()
-plt.savefig(rf"{BASE}\resultscheckofmodels\figures\confusion_matrix_test.jpg", dpi=200, bbox_inches='tight')
+plt.savefig(rf"{BASE}\results_3class\figures\confusion_matrix_test.jpg", dpi=200, bbox_inches='tight')
 plt.close()
 print("  ✓ confusion_matrix_test.jpg")
 
@@ -180,7 +176,7 @@ for row, label, color in [
 
 ax.set_title('MLP Gradient Saliency Map — Input Importance', fontsize=14, fontweight='bold')
 plt.tight_layout()
-plt.savefig(rf"{BASE}\resultscheckofmodels\figures\mlp_saliency.jpg", dpi=200, bbox_inches='tight')
+plt.savefig(rf"{BASE}\results_3class\figures\mlp_saliency.jpg", dpi=200, bbox_inches='tight')
 plt.close()
 print("  ✓ mlp_saliency.jpg")
 
@@ -222,4 +218,4 @@ else:
     print("\nNeither band shows above-chance saliency — REVIEW NEEDED,")
     print("saliency does not appear to concentrate on electrochemically meaningful regions.")
 
-print(f"\n✓ ANALYSIS COMPLETE — 4 figures saved to results\\figures\\")
+print(f"\n✓ ANALYSIS COMPLETE — 4 figures saved to results_3class\\figures\\")
