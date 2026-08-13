@@ -1,8 +1,9 @@
 """
 Test the final MLP model on the held-out test set (RUN ONCE — final reportable numbers).
 Classes: 0=baseline, 1=spontaneous, 2=stimulated
+
 Applies the confirmed threshold boosts (spontaneous and stimulated probabilities)
-before argmax, tuned via sweep_boost_3class_2d.py.
+before argmax
 
 Usage: python test_mlp_3class.py
 """
@@ -19,10 +20,10 @@ WINDOW_FRAMES = int(2.0 * _cfg['fscv_hz'])
 N_VOLTAGE_PTS = 1100
 MLP_INPUT     = N_VOLTAGE_PTS * WINDOW_FRAMES
 
-BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output retrain"
+BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output"
 SPONTANEOUS_BOOST = 0.10
 STIMULATED_BOOST = 1.00   
-RESULTS_DIR = rf"{BASE}\resultscheckofmodels"
+RESULTS_DIR = rf"{BASE}\results_3class"
 
 os.makedirs(RESULTS_DIR, exist_ok=True)
 
@@ -86,7 +87,7 @@ def test_mlp(X, y):
 
 def main():
     print("\nLoading TEST set...")
-    test_meta = pd.read_csv(rf"{BASE}\windows_metadata_test_v2.csv")
+    test_meta = pd.read_csv(rf"{BASE}\windows_metadata_test.csv")
     y_test    = test_meta['label'].values
 
     print(f"Test set: {len(y_test)} samples")
