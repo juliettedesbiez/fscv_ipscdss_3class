@@ -1,10 +1,6 @@
 """Shared utilities for FSCV classification pipeline — iPSC 3-CLASS, MLP-only.
 
-RF/XGB/CNN dropped from this pipeline (no feature separability advantage
-for RF/XGB, CNN didn't outperform MLP) — so load_features() and
-select_models() are gone too, since they existed only to serve those
-models. load_raw_for_features() no longer needs features_v2.csv (an
-engineered-feature table nothing here uses); it reads the lightweight
+It reads the lightweight
 balance+split file produced by make_split_3class.py instead.
 """
 
@@ -16,7 +12,7 @@ from sklearn.metrics import roc_auc_score
 RANDOM_STATE = 42
 CLASS_NAMES  = ['Baseline', 'Spontaneous', 'Stimulated']
 
-BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output retrain"
+BASE = r"C:\Users\julie\OneDrive - Imperial College London\3 class output"
 
 
 def load_raw_for_features(split="train"):
@@ -26,12 +22,12 @@ def load_raw_for_features(split="train"):
     unchanged.
 
     Reads window_id/label/group_id from the lightweight split file
-    (windows_metadata_train_v2.csv / windows_metadata_test_v2.csv,
-    produced by make_split_3class.py) rather than features_v2.csv —
+    (windows_metadata_train.csv / windows_metadata_test.csv,
+    produced by make_split_3class.py) rather than features.csv —
     no engineered features are computed or needed for the MLP.
     """
     print(f"Loading raw windows ({split})...")
-    df = pd.read_csv(rf"{BASE}\windows_metadata_{split}_v2.csv")
+    df = pd.read_csv(rf"{BASE}\windows_metadata_{split}.csv")
     X = np.array([np.load(rf"{BASE}\window_arrays\{wid}.npy").flatten()
               for wid in df['window_id']], dtype=np.float32)
     y, groups = df['label'].values, df['group_id'].astype(str).values
